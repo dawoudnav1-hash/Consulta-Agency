@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CONSULTA | AI Automation Agency</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #000000;
+            --border-color: #1a1a1a;
+            --secondary-text: #888888;
+            --accent-purple: #8b5cf6;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: #ffffff;
+            margin: 0;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+        .nav-link {
+            color: var(--secondary-text);
+            transition: color 0.2s ease;
+        }
+        .nav-link:hover {
+            color: #ffffff;
+        }
+        
+        /* Hero Section Styling - Interactive Background */
+        #about {
+            background-color: #030005;
+            position: relative;
+        }
+
+        #stars-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        #interactive-glow-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        #glow-follower {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 700px;
+            height: 700px;
+            transition: top 0.6s cubic-bezier(0.23, 1, 0.32, 1), left 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+            will-change: top, left;
+        }
+
+        /* Abstract glowing shapes */
+        .nebula-shape-1 {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.3) 0%, rgba(139, 92, 246, 0) 60%);
+            border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+            filter: blur(80px);
+            mix-blend-mode: screen;
+            animation: morph 15s linear infinite;
+        }
+
+        .nebula-shape-2 {
+            position: absolute;
+            inset: 10%;
+            background: radial-gradient(circle, rgba(109, 40, 217, 0.25) 0%, rgba(109, 40, 217, 0) 60%);
+            border-radius: 60% 40% 30% 70% / 50% 60% 40% 50%;
+            filter: blur(60px);
+            mix-blend-mode: screen;
+            animation: morph 12s linear infinite reverse;
+        }
+
+        @keyframes morph {
+            0% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(180deg) scale(1.1); }
+            100% { transform: rotate(360deg) scale(1); }
+        }
+
+        /* Technical Card Styling */
+        .tech-card {
+            background: #0a0a0a;
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .tech-card:hover {
+            border-color: var(--accent-purple);
+            box-shadow: 0 0 30px rgba(139, 92, 246, 0.1);
+        }
+
+        .visual-container {
+            background: #050505;
+            border: 1px solid #1a1a1a;
+            border-radius: 16px;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+        }
+
+        /* Hover Interaction: Button Reveal */
+        .hover-reveal-btn {
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+        }
+        .tech-card:hover .hover-reveal-btn {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* FAQ Accordion */
+        .faq-item {
+            border-bottom: 1px solid var(--border-color);
+            transition: background 0.3s ease;
+        }
+        .faq-item:hover {
+            background: rgba(255,255,255,0.02);
+        }
+        .faq-question {
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 0;
+            transition: color 0.3s ease;
+        }
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            color: var(--secondary-text);
+            line-height: 1.6;
+        }
+        .faq-item.active .faq-answer {
+            max-height: 300px;
+            padding-bottom: 2rem;
+        }
+        .faq-icon {
+            transition: transform 0.4s ease;
+        }
+        .faq-item.active .faq-icon {
+            transform: rotate(45deg);
+        }
+
+        /* Hide scrollbar */
+        ::-webkit-scrollbar { display: none; }
+        body { -ms-overflow-style: none; scrollbar-width: none; scroll-behavior: smooth; }
+
+        .stat-glow {
+            text-shadow: 0 0 15px rgba(139, 92, 246, 0.5);
+        }
+    </style>
+</head>
+<body class="selection:bg-purple-500 selection:text-white">
+
+    <nav class="fixed top-0 w-full z-50 bg-black/80 backdrop-blur-md border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-12">
+                <a href="#" class="text-xl font-bold tracking-tighter uppercase italic text-white">CONSULTA</a>
+                <div class="hidden md:flex items-center gap-8">
+                    <a href="#about" class="nav-link text-sm font-medium">Home</a>
+                    <a href="#services" class="nav-link text-sm font-medium">Services</a>
+                    <a href="#process" class="nav-link text-sm font-medium">Process</a>
+                    <a href="#contact" class="nav-link text-sm font-medium">Contact</a>
+                </div>
+            </div>
+            <a href="#contact" class="bg-[#8b5cf6] text-white text-sm font-medium px-6 py-2.5 rounded-lg hover:brightness-110 transition-all shadow-[0_0_15px_rgba(139,92,246,0.3)]">
+                Book a call
+            </a>
+        </div>
+    </nav>
+
+    <section id="about" class="pt-48 pb-40 px-6 border-b border-[#1a1a1a] flex flex-col justify-center min-h-[90vh]">
+        <canvas id="stars-canvas"></canvas>
+        <div id="interactive-glow-container">
+            <div id="glow-follower">
+                <div class="nebula-shape-1"></div>
+                <div class="nebula-shape-2"></div>
+            </div>
+        </div>
+
+        <div class="max-w-5xl mx-auto text-center relative z-10 flex flex-col items-center">
+            <div class="bg-[#8b5cf6] text-white text-xs font-medium px-4 py-1.5 rounded-full mb-8">
+                New
+            </div>
+            
+            <h1 class="text-5xl md:text-7xl lg:text-[5rem] font-bold tracking-tight leading-[1.05] mb-6 text-white">
+                Intelligent Automation for <br/> Modern Businesses.
+            </h1>
+            
+            <p class="text-lg md:text-xl text-gray-300 leading-relaxed mb-10 max-w-2xl mx-auto font-light">
+                Consulta brings AI automation to your fingertips & streamline tasks. We help agencies and startups scale without adding headcount.
+            </p>
+            
+            <div class="flex flex-col sm:flex-row items-center gap-4">
+                <a href="#contact" class="bg-[#8b5cf6] text-white px-8 py-3.5 rounded-lg font-medium text-sm hover:brightness-110 transition-all flex items-center gap-2">
+                    Get in touch <i class="fa-solid fa-arrow-right-long text-xs mt-0.5"></i>
+                </a>
+                <a href="#services" class="bg-black text-white px-8 py-3.5 rounded-lg border border-white/20 font-medium text-sm hover:bg-white/5 transition-all">
+                    View services
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section id="services" class="py-32 px-6 bg-black">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Service 1: Workflow Automation -->
+                <div class="bg-[#0a0a0a] border border-[#1a1a1a] rounded-[24px] p-6 flex flex-col md:flex-row gap-8 hover:border-[#333] transition-colors">
+                    <div class="bg-[#121212] border border-[#1f1f1f] rounded-[16px] p-6 w-full md:w-1/2 flex flex-col justify-center">
+                        <div class="text-[11px] text-gray-500 mb-5 font-medium">All Tasks</div>
+                        <div class="space-y-4">
+                            <div>
+                                <div class="text-[13px] text-white font-medium mb-0.5">Payroll management</div>
+                                <div class="text-[11px] text-gray-500">Due on 2nd july</div>
+                            </div>
+                            <div>
+                                <div class="text-[13px] text-white font-medium mb-0.5">Employee Tracking</div>
+                                <div class="text-[11px] text-gray-500">2 days ago</div>
+                            </div>
+                            <div>
+                                <div class="text-[13px] text-gray-400 font-medium mb-0.5">Social media post</div>
+                                <div class="text-[11px] text-red-500">Cancelled by user</div>
+                            </div>
+                            <div>
+                                <div class="text-[13px] text-white font-medium mb-0.5">Lead list</div>
+                                <div class="flex items-center justify-between gap-4">
+                                    <div class="text-[11px] text-blue-500">70% prepared</div>
+                                    <div class="w-16 h-1.5 bg-[#222] rounded-full overflow-hidden"><div class="bg-blue-600 w-[70%] h-full"></div></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="text-[13px] text-white font-medium mb-0.5">Payment reminder</div>
+                                <div class="text-[11px] text-green-500">sent to selected clients</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="w-full md:w-1/2 flex flex-col justify-center py-2 pr-4">
+                        <h4 class="text-2xl font-semibold text-white mb-2">Workflow Automation</h4>
+                        <p class="text-purple-400 text-sm mb-4 font-medium">Automate repetitive tasks</p>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-6">We help you streamline internal operations by automating manual workflows like data entry, reporting, and approval chains — saving time and cutting down errors.</p>
+                        <div class="flex gap-2 mt-auto">
+                            <span class="text-[11px] font-medium px-3 py-1.5 bg-[#161616] border border-[#222] rounded-full text-gray-300">Internal Task Bots</span>
+                            <span class="text-[11px] font-medium px-3 py-1.5 bg-[#161616] border border-[#222] rounded-full text-gray-300">100+ Automations</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Service 2: AI Assistant -->
+                <div class="bg-[#0a0a0a] border border-[#1a1a1a] rounded-[24px] p-6 flex flex-col md:flex-row gap-8 hover:border-[#333] transition-colors">
+                    <div class="bg-[#121212] border border-[#1f1f1f] rounded-[16px] p-6 w-full md:w-1/2 flex flex-col">
+                        <div class="text-[11px] text-gray-500 mb-6 font-medium">What can I help with?</div>
+                        <div class="space-y-4 mb-8">
+                            <div class="bg-[#7c3aed] text-white p-3.5 rounded-2xl rounded-tr-sm ml-auto max-w-[85%] text-[13px] leading-relaxed shadow-lg">
+                                Schedule a 30 day content
+                            </div>
+                            <div class="bg-[#1c1c1c] text-gray-300 p-3.5 rounded-2xl rounded-tl-sm mr-auto max-w-[90%] text-[13px] leading-relaxed border border-[#2a2a2a]">
+                                I'll help you schedule that content calendar.
+                            </div>
+                        </div>
+                        <div class="mt-auto flex items-center gap-4 text-[12px] text-gray-500 font-medium">
+                            <span class="flex items-center gap-1.5"><i class="fa-regular fa-file-lines"></i> Add document</span>
+                            <span class="flex items-center gap-1.5"><i class="fa-solid fa-magnifying-glass"></i> Analyze</span>
+                        </div>
+                    </div>
+                    <div class="w-full md:w-1/2 flex flex-col justify-center py-2 pr-4">
+                        <h4 class="text-2xl font-semibold text-white mb-2">AI Assistant</h4>
+                        <p class="text-purple-400 text-sm mb-4 font-medium">Delegate Daily Tasks</p>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-6">From managing calendars to drafting emails and summarizing meetings, our AI assistants work around the clock to keep your business running smarter and faster.</p>
+                        <div class="flex flex-wrap gap-2 mt-auto">
+                            <span class="text-[11px] font-medium px-3 py-1.5 bg-[#161616] border border-[#222] rounded-full text-gray-300">Summaries</span>
+                            <span class="text-[11px] font-medium px-3 py-1.5 bg-[#161616] border border-[#222] rounded-full text-gray-300">Scheduling</span>
+                            <span class="text-[11px] font-medium px-3 py-1.5 bg-[#161616] border border-[#222] rounded-full text-gray-300">Many more</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Service 3: Sales & Marketing -->
+                <div class="bg-[#0a0a0a] border border-[#1a1a1a] rounded-[24px] p-6 flex flex-col md:flex-row gap-8 hover:border-[#333] transition-colors">
+                    <div class="bg-[#121212] border border-[#1f1f1f] rounded-[16px] p-6 w-full md:w-1/2 flex flex-col justify-center space-y-5">
+                        <div class="flex items-center gap-4 bg-[#1a1a1a] p-3 rounded-xl border border-[#2a2a2a]">
+                            <div class="w-10 h-10 rounded-full bg-[#7c3aed] flex items-center justify-center text-[13px] font-bold text-white shadow-inner">JD</div>
+                            <div>
+                                <div class="text-[14px] text-white font-medium flex items-center gap-1.5">Jack Daniel <i class="fa-solid fa-circle-check text-blue-500 text-[11px]"></i></div>
+                                <div class="text-[12px] text-gray-500">Xavier LLC</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4 bg-[#1a1a1a] p-3 rounded-xl border border-[#2a2a2a]">
+                            <div class="w-10 h-10 rounded-full bg-[#3b82f6] flex items-center justify-center text-[13px] font-bold text-white shadow-inner">GC</div>
+                            <div>
+                                <div class="text-[14px] text-white font-medium flex items-center gap-1.5">Gorge Chapel <i class="fa-solid fa-circle-check text-blue-500 text-[11px]"></i></div>
+                                <div class="text-[12px] text-gray-500">Chapel LLC</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4 bg-[#1a1a1a] p-3 rounded-xl border border-[#2a2a2a]">
+                            <div class="w-10 h-10 rounded-full bg-[#ec4899] flex items-center justify-center text-[13px] font-bold text-white shadow-inner">MT</div>
+                            <div>
+                                <div class="text-[14px] text-white font-medium flex items-center gap-1.5">Mike Tylor <i class="fa-solid fa-circle-check text-blue-500 text-[11px]"></i></div>
+                                <div class="text-[12px] text-gray-500">CMB LLC</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="w-full md:w-1/2 flex flex-col justify-center py-2 pr-4">
+                        <h4 class="text-2xl font-semibold text-white mb-2">Sales & Marketing</h4>
+                        <p class="text-purple-400 text-sm mb-4 font-medium">Accelerate Sales Growth</p>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-6">AI tools for lead generation, personalized outreach, and automated content creation that scales your sales efforts and builds stronger brand presence.</p>
+                        <div class="flex flex-wrap gap-2 mt-auto">
+                            <span class="text-[11px] font-medium px-3 py-1.5 bg-[#161616] border border-[#222] rounded-full text-gray-300">Leads</span>
+                            <span class="text-[11px] font-medium px-3 py-1.5 bg-[#161616] border border-[#222] rounded-full text-gray-300">Content</span>
+                            <span class="text-[11px] font-medium px-3 py-1.5 bg-[#161616] border border-[#222] rounded-full text-gray-300">Social post</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Service 4: Custom Projects -->
+                <div class="bg-[#0a0a0a] border border-[#1a1a1a] rounded-[24px] p-6 flex flex-col md:flex-row gap-8 hover:border-[#333] transition-colors">
+                    <div class="bg-[#121212] border border-[#1f1f1f] rounded-[16px] p-6 w-full md:w-1/2 flex flex-col justify-center">
+                        <div class="text-[14px] text-white font-medium mb-1">Hey David!</div>
+                        <div class="text-[12px] text-gray-500 mb-6">Here is your Custom project & schedule</div>
+                        
+                        <div class="text-[11px] text-gray-500 mb-2 font-medium">On going project :</div>
+                        <div class="mb-6">
+                            <div class="flex justify-between items-end mb-2">
+                                <span class="text-[14px] text-white font-medium">Customer Support Chatbot</span> 
+                                <span class="text-[11px] text-green-500 font-medium">90% Finished</span>
+                            </div>
+                            <div class="w-full h-1.5 bg-[#222] rounded-full overflow-hidden"><div class="bg-green-500 w-[90%] h-full rounded-full shadow-[0_0_8px_rgba(34,197,94,0.6)]"></div></div>
+                        </div>
+                        
+                        <div class="flex justify-between items-center px-1">
+                            <div class="w-7 h-7 rounded-md bg-[#7c3aed] flex items-center justify-center text-[11px] text-white font-medium shadow-lg">Mo</div>
+                            <div class="text-[11px] text-gray-500 font-medium">Tu</div>
+                            <div class="w-7 h-7 rounded-md bg-[#7c3aed] flex items-center justify-center text-[11px] text-white font-medium shadow-lg">We</div>
+                            <div class="text-[11px] text-gray-500 font-medium">Th</div>
+                            <div class="text-[11px] text-gray-500 font-medium">Fr</div>
+                            <div class="text-[11px] text-gray-500 font-medium">Sa</div>
+                            <div class="text-[11px] text-gray-500 font-medium">Su</div>
+                        </div>
+                    </div>
+                    <div class="w-full md:w-1/2 flex flex-col justify-center py-2 pr-4">
+                        <h4 class="text-2xl font-semibold text-white mb-2">Custom Projects</h4>
+                        <p class="text-purple-400 text-sm mb-4 font-medium">Build Smarter Systems</p>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-6">Whether you're starting from scratch or enhancing an existing system, we offer strategic consulting and develop custom AI projects aligned with your unique goals.</p>
+                        <div class="flex flex-wrap gap-2 mt-auto">
+                            <span class="text-[11px] font-medium px-3 py-1.5 bg-[#161616] border border-[#222] rounded-full text-gray-300">Strategy</span>
+                            <span class="text-[11px] font-medium px-3 py-1.5 bg-[#161616] border border-[#222] rounded-full text-gray-300">Custom AI</span>
+                            <span class="text-[11px] font-medium px-3 py-1.5 bg-[#161616] border border-[#222] rounded-full text-gray-300">Consulting</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="process" class="py-32 px-6 bg-black">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-5xl font-bold mb-4 text-white tracking-tight">Our Process</h2>
+                <p class="text-gray-400 text-lg">How We Work</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Process 01 -->
+                <div class="bg-[#0a0a0a] border border-[#1a1a1a] rounded-[24px] p-8 flex flex-col hover:border-[#333] transition-colors">
+                    <div class="text-5xl font-bold text-[#222] mb-6 tracking-tighter">01</div>
+                    <h4 class="text-xl font-bold mb-3 text-white">Smart Analyzing</h4>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-8">We assess your needs and identify AI solutions to streamline workflows and improve efficiency.</p>
+                    
+                    <div class="bg-[#121212] border border-[#1f1f1f] rounded-[16px] p-5 mt-auto flex-1">
+                        <div class="text-[11px] text-gray-500 mb-4 font-medium">Analyzing current workflow..</div>
+                        <div class="space-y-3">
+                            <div class="flex items-center gap-3 text-[13px] text-gray-300"><i class="fa-solid fa-circle-check text-green-500 text-[14px]"></i> System check</div>
+                            <div class="flex items-center gap-3 text-[13px] text-gray-300"><i class="fa-solid fa-circle-check text-green-500 text-[14px]"></i> Process check</div>
+                            <div class="flex items-center gap-3 text-[13px] text-gray-300"><i class="fa-solid fa-circle-check text-green-500 text-[14px]"></i> Speed check</div>
+                            <div class="flex items-center gap-3 text-[13px] text-gray-500"><i class="fa-regular fa-circle text-gray-600 text-[14px]"></i> Manual work</div>
+                            <div class="flex items-center gap-3 text-[13px] text-gray-500"><i class="fa-regular fa-circle text-gray-600 text-[14px]"></i> Repetitive task</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Process 02 -->
+                <div class="bg-[#0a0a0a] border border-[#1a1a1a] rounded-[24px] p-8 flex flex-col hover:border-[#333] transition-colors">
+                    <div class="text-5xl font-bold text-[#222] mb-6 tracking-tighter">02</div>
+                    <h4 class="text-xl font-bold mb-3 text-white">AI Development</h4>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-8">Our team builds intelligent automation systems tailored to your business processes.</p>
+                    
+                    <div class="bg-[#121212] border border-[#1f1f1f] rounded-[16px] p-5 mt-auto flex-1 overflow-hidden">
+                        <pre class="text-[11px] font-mono leading-[1.6]"><span class="text-[#c678dd]">class</span> <span class="text-[#e5c07b]">AutomationTrigger</span>:
+    <span class="text-[#c678dd]">def</span> <span class="text-[#61afef]">__init__</span>(<span class="text-[#e06c75]">self</span>, threshold):
+        <span class="text-[#e06c75]">self</span>.threshold = threshold
+        <span class="text-[#e06c75]">self</span>.status = <span class="text-[#98c379]">"inactive"</span>
+
+    <span class="text-[#c678dd]">def</span> <span class="text-[#61afef]">check_trigger</span>(<span class="text-[#e06c75]">self</span>, value):
+        <span class="text-[#c678dd]">if</span> value > <span class="text-[#e06c75]">self</span>.threshold:
+            <span class="text-[#e06c75]">self</span>.status = <span class="text-[#98c379]">"active"</span>
+            <span class="text-[#c678dd]">return</span> <span class="text-[#98c379]">"Automation triggered!"</span></pre>
+                    </div>
+                </div>
+
+                <!-- Process 03 -->
+                <div class="bg-[#0a0a0a] border border-[#1a1a1a] rounded-[24px] p-8 flex flex-col hover:border-[#333] transition-colors">
+                    <div class="text-5xl font-bold text-[#222] mb-6 tracking-tighter">03</div>
+                    <h4 class="text-xl font-bold mb-3 text-white">Seamless Integration</h4>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-8">We smoothly integrate AI solutions into your existing infrastructure with minimal disruption.</p>
+                    
+                    <div class="bg-[#121212] border border-[#1f1f1f] rounded-[16px] p-5 mt-auto flex-1 flex items-center justify-between px-4">
+                        <div class="flex flex-col items-center gap-3 w-16">
+                            <div class="w-12 h-12 bg-[#2d1b4e] rounded-xl flex items-center justify-center border border-[#4c2889] shadow-[0_0_15px_rgba(124,58,237,0.2)]">
+                                <i class="fa-solid fa-server text-[#a78bfa] text-lg"></i>
+                            </div>
+                            <span class="text-[10px] text-gray-500 font-medium whitespace-nowrap">Our solution</span>
+                        </div>
+                        
+                        <div class="flex-1 flex items-center justify-center px-2">
+                            <div class="w-full h-[2px] bg-[#333] relative">
+                                <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-2.5 h-2.5 bg-[#8b5cf6] rounded-full shadow-[0_0_8px_#8b5cf6]"></div>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col items-center gap-3 w-16">
+                            <div class="w-12 h-12 bg-[#1a1a1a] rounded-xl flex items-center justify-center border border-[#333]">
+                                <i class="fa-solid fa-cubes text-gray-400 text-lg"></i>
+                            </div>
+                            <span class="text-[10px] text-gray-500 font-medium whitespace-nowrap">Your stack</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Process 04 -->
+                <div class="bg-[#0a0a0a] border border-[#1a1a1a] rounded-[24px] p-8 flex flex-col hover:border-[#333] transition-colors">
+                    <div class="text-5xl font-bold text-[#222] mb-6 tracking-tighter">04</div>
+                    <h4 class="text-xl font-bold mb-3 text-white">Continuous Optimization</h4>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-8">We refine performance, analyze insights, and enhance automation for long-term growth.</p>
+                    
+                    <div class="bg-[#121212] border border-[#1f1f1f] rounded-[16px] p-6 mt-auto flex-1 flex flex-col justify-center space-y-6">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[13px] text-gray-300 font-medium">Chatbot<br>system</span>
+                            <div class="flex items-center gap-3">
+                                <span class="text-[11px] text-gray-500 text-right leading-tight">Efficiency will<br>increase by 20%</span>
+                                <div class="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.8)]"></div>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-[13px] text-gray-300 font-medium">Workflow<br>system</span>
+                            <div class="flex items-center gap-3">
+                                <span class="text-[11px] text-gray-500 text-right leading-tight">Update<br>available..</span>
+                                <div class="w-2 h-2 rounded-full bg-yellow-500 shadow-[0_0_8px_rgba(234,179,8,0.8)]"></div>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-[13px] text-gray-300 font-medium">Sales system</span>
+                            <div class="flex items-center gap-3">
+                                <span class="text-[11px] text-gray-500 text-right leading-tight">Up to date</span>
+                                <div class="w-2 h-2 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.8)]"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-32 px-6 bg-black border-t border-[#1a1a1a]">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-20">
+                <h2 class="text-[10px] font-bold text-purple-500 uppercase tracking-[0.5em] mb-4">Outcomes</h2>
+                <h3 class="text-4xl font-bold mb-4">The Impact of AI Acceleration</h3>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-16">
+                <div class="group">
+                    <h4 class="text-5xl font-bold mb-4 stat-glow transition-all group-hover:text-purple-400">12k+</h4>
+                    <p class="text-xs font-bold uppercase text-gray-600 mb-2">Hours Saved</p>
+                    <p class="text-gray-500 text-sm font-light">Calculated annually across our top 10 portfolio companies.</p>
+                </div>
+                <div class="group">
+                    <h4 class="text-5xl font-bold mb-4 stat-glow transition-all group-hover:text-purple-400">40%</h4>
+                    <p class="text-xs font-bold uppercase text-gray-600 mb-2">Cost Reduction</p>
+                    <p class="text-gray-500 text-sm font-light">Average reduction in operational overhead within 6 months.</p>
+                </div>
+                <div class="group">
+                    <h4 class="text-5xl font-bold mb-4 stat-glow transition-all group-hover:text-purple-400">24/7</h4>
+                    <p class="text-xs font-bold uppercase text-gray-600 mb-2">System Uptime</p>
+                    <p class="text-gray-500 text-sm font-light">Autonomous agents that never sleep, handling support and sales.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-32 px-6 border-t border-[#1a1a1a] relative bg-black overflow-hidden">
+        <!-- Tech dot grid background -->
+        <div class="absolute inset-0" style="background-image: radial-gradient(rgba(139, 92, 246, 0.15) 1px, transparent 1px); background-size: 40px 40px; opacity: 0.5;"></div>
+        
+        <div class="max-w-7xl mx-auto relative z-10">
+            <div class="flex flex-col lg:flex-row gap-16 items-center">
+                <div class="lg:w-5/12 w-full">
+                    <h2 class="text-[10px] font-bold text-purple-500 uppercase tracking-[0.5em] mb-4">Consultation</h2>
+                    <h3 class="text-5xl md:text-6xl font-bold mb-8 leading-tight tracking-tight text-white">
+                        Ready to <span class="italic text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-purple-600">scale?</span>
+                    </h3>
+                    <p class="text-gray-400 mb-10 leading-relaxed font-light text-lg">
+                        Schedule a discovery call to audit your current systems and architect your future AI-native operating system.
+                    </p>
+                    
+                    <div class="space-y-6 mb-12">
+                        <div class="flex items-start gap-4">
+                            <div class="w-8 h-8 rounded-full bg-purple-500/10 flex items-center justify-center border border-purple-500/20 shrink-0 mt-1">
+                                <i class="fa-solid fa-bolt text-purple-500 text-xs"></i>
+                            </div>
+                            <div>
+                                <h5 class="text-white font-medium text-sm mb-1">15-Minute Discovery</h5>
+                                <p class="text-gray-500 text-xs leading-relaxed">A quick chat to uncover your biggest operational bottlenecks and time-drains.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="w-8 h-8 rounded-full bg-purple-500/10 flex items-center justify-center border border-purple-500/20 shrink-0 mt-1">
+                                <i class="fa-solid fa-map text-purple-500 text-xs"></i>
+                            </div>
+                            <div>
+                                <h5 class="text-white font-medium text-sm mb-1">Custom AI Roadmap</h5>
+                                <p class="text-gray-500 text-xs leading-relaxed">We map out exactly where autonomous agents can replace manual workflows.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="w-8 h-8 rounded-full bg-purple-500/10 flex items-center justify-center border border-purple-500/20 shrink-0 mt-1">
+                                <i class="fa-solid fa-shield-halved text-purple-500 text-xs"></i>
+                            </div>
+                            <div>
+                                <h5 class="text-white font-medium text-sm mb-1">No Obligations</h5>
+                                <p class="text-gray-500 text-xs leading-relaxed">If we aren't a perfect fit, you walk away with free strategic insights to apply yourself.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="inline-flex items-center gap-3 text-sm text-gray-300 bg-[#0a0a0a] p-4 rounded-xl border border-[#222] shadow-lg">
+                        <i class="fa-solid fa-envelope text-purple-500"></i>
+                        consultaagency@gmail.com
+                    </div>
+                </div>
+                
+                <div class="lg:w-7/12 w-full">
+                    <!-- Browser Mockup Container -->
+                    <div class="bg-[#050505] border border-[#222] rounded-[24px] shadow-[0_0_50px_rgba(139,92,246,0.1)] overflow-hidden flex flex-col">
+                        <!-- Browser Header -->
+                        <div class="bg-[#0a0a0a] border-b border-[#222] px-6 py-4 flex items-center gap-4 relative">
+                            <div class="flex gap-2 shrink-0">
+                                <div class="w-3 h-3 rounded-full bg-[#ff5f56]"></div>
+                                <div class="w-3 h-3 rounded-full bg-[#ffbd2e]"></div>
+                                <div class="w-3 h-3 rounded-full bg-[#27c93f]"></div>
+                            </div>
+                            <!-- Mock URL Bar -->
+                            <div class="absolute left-1/2 transform -translate-x-1/2 w-1/2 bg-[#161616] border border-[#333] text-gray-500 text-[11px] py-1.5 rounded-md flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-lock text-[9px]"></i> calendly.com/consulta
+                            </div>
+                        </div>
+                        <!-- Calendly Area -->
+                        <div class="relative w-full bg-black">
+                            <div class="calendly-inline-widget" data-url="https://calendly.com/dawoudnav1/consulta-meeting?hide_landing_page_details=1&hide_gdpr_banner=1&background_color=000000&text_color=ffffff&primary_color=8b5cf6" style="min-width:320px;height:700px;"></div>
+                            <script type="text/javascript" src="https://assets.calendly.com/assets/external/widget.js" async></script>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq" class="py-32 px-6 border-t border-[#1a1a1a] bg-[#030303]">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-20">
+                <h2 class="text-[10px] font-bold text-purple-500 uppercase tracking-[0.5em] mb-4">Support</h2>
+                <h3 class="text-4xl font-bold">Frequently Asked</h3>
+            </div>
+            
+            <div class="space-y-2">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span class="text-lg font-medium">How long does implementation typically take?</span>
+                        <i class="fa-solid fa-plus faq-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Standard builds take 1-2 weeks (3 weeks max) from audit to full deployment. More complex multi-agent systems involving proprietary data training may take 8-12 weeks. We move at the speed of your infrastructure.
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span class="text-lg font-medium">Do we need to switch our existing tech stack?</span>
+                        <i class="fa-solid fa-plus faq-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        No. We build "stack-agnostic" solutions. We plug into HubSpot, Salesforce, Slack, GoHighLevel, and custom ERPs via secure APIs. Our goal is to enhance your current tools, not replace them.
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span class="text-lg font-medium">Is my business data secure?</span>
+                        <i class="fa-solid fa-plus faq-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Security is our priority. We implement SOC2-compliant data handling. We use private, dedicated instances of LLM models to ensure your proprietary data never trains public models. Your intellectual property remains yours.
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span class="text-lg font-medium">What is the expected ROI for AI automation?</span>
+                        <i class="fa-solid fa-plus faq-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Most clients achieve full payback within 4 months through payroll savings and increased capacity. Beyond cost, the ROI comes from speed and the ability to scale without linear hiring.
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span class="text-lg font-medium">Can you automate my specific CRM?</span>
+                        <i class="fa-solid fa-plus faq-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        If your CRM has an API, we can automate it. We have deep experience with HubSpot, Pipedrive, Zoho, and custom-built SQL-based systems. We specialize in cross-tool synchronization.
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span class="text-lg font-medium">What kind of ongoing support do you offer?</span>
+                        <i class="fa-solid fa-plus faq-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        We offer monthly "Optimization & Retain" packages where we fine-tune your prompts, update models as new tech releases (like GPT-5 or Claude 4), and monitor system logs to prevent errors.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA Section -->
+    <section class="py-40 px-6 border-t border-[#1a1a1a] bg-[#030005] relative overflow-hidden">
+        <!-- Background glow -->
+        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-purple-600/20 blur-[120px] rounded-full pointer-events-none"></div>
+        
+        <div class="max-w-4xl mx-auto text-center relative z-10 flex flex-col items-center">
+            <h2 class="text-5xl md:text-7xl font-bold tracking-tighter leading-tight mb-10 text-white">
+                Let AI do the work so you can <br/>
+                <span class="italic text-purple-400">scale faster.</span>
+            </h2>
+            <a href="#contact" class="inline-flex items-center justify-center gap-3 bg-[#8b5cf6] text-white px-10 py-5 rounded-xl font-bold text-lg hover:brightness-110 transition-all shadow-[0_0_40px_rgba(139,92,246,0.3)] hover:scale-105 transform w-full sm:w-auto">
+                Yes, help me scale my business <i class="fa-solid fa-arrow-right"></i>
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-20 px-6 border-t border-[#1a1a1a]">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-10">
+            <div class="text-center md:text-left">
+                <p class="text-sm font-bold tracking-tighter mb-2 uppercase italic">CONSULTA</p>
+                <p class="text-[10px] text-gray-500 tracking-[0.3em] uppercase">Built with precision © All rights reserved</p>
+            </div>
+            <div class="flex gap-10 text-[10px] font-bold uppercase tracking-widest text-gray-500">
+                <a href="#" class="hover:text-purple-500 transition-colors">Twitter</a>
+                <a href="#" class="hover:text-purple-500 transition-colors">LinkedIn</a>
+                <a href="#" class="hover:text-purple-500 transition-colors">Instagram</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const href = this.getAttribute('href');
+                if (href === '#') return;
+                const target = document.querySelector(href);
+                if (target) {
+                    e.preventDefault();
+                    window.scrollTo({
+                        top: target.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // FAQ Toggle
+        document.querySelectorAll('.faq-question').forEach(button => {
+            button.addEventListener('click', () => {
+                const faqItem = button.parentElement;
+                const isActive = faqItem.classList.contains('active');
+                
+                // Close all
+                document.querySelectorAll('.faq-item').forEach(item => item.classList.remove('active'));
+                
+                // Open clicked
+                if (!isActive) faqItem.classList.add('active');
+            });
+        });
+
+        // Interactive Glow Logic
+        const heroSection = document.getElementById('about');
+        const glowFollower = document.getElementById('glow-follower');
+        
+        // Track mouse position within hero
+        heroSection.addEventListener('mousemove', (e) => {
+            const rect = heroSection.getBoundingClientRect();
+            // Calculate position relative to the hero section
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            // Move the center of the glow to the cursor
+            glowFollower.style.left = `${x}px`;
+            glowFollower.style.top = `${y}px`;
+        });
+
+        // Reset glow to center when mouse leaves
+        heroSection.addEventListener('mouseleave', () => {
+            glowFollower.style.left = '50%';
+            glowFollower.style.top = '50%';
+        });
+
+        // Stars Canvas Logic
+        const canvas = document.getElementById('stars-canvas');
+        const ctx = canvas.getContext('2d');
+        let stars = [];
+
+        function resizeCanvas() {
+            canvas.width = heroSection.offsetWidth;
+            canvas.height = heroSection.offsetHeight;
+        }
+
+        function initStars() {
+            resizeCanvas();
+            stars = [];
+            for (let i = 0; i < 200; i++) {
+                stars.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    radius: Math.random() * 1.5,
+                    alpha: Math.random(),
+                    speed: Math.random() * 0.02 + 0.01
+                });
+            }
+        }
+
+        function drawStars() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            stars.forEach(star => {
+                star.alpha += star.speed;
+                if (star.alpha <= 0 || star.alpha >= 1) {
+                    star.speed = -star.speed;
+                }
+                ctx.beginPath();
+                ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 255, 255, ${Math.abs(star.alpha)})`;
+                ctx.fill();
+            });
+            requestAnimationFrame(drawStars);
+        }
+
+        window.addEventListener('resize', () => {
+            resizeCanvas();
+            initStars();
+        });
+
+        // Initialize Canvas
+        initStars();
+        drawStars();
+
+    </script>
+</body>
+</html>
